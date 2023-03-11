@@ -120,7 +120,7 @@ def action8(pop,index):
 
 def backtracking(pops):
     backtrack.append(pops)
-    print('backtrack: ',backtrack)
+    # print('backtrack: ',backtrack)
     key = node_records[pops]
     backtrack.append(key)
     while key!=init_pos:
@@ -128,11 +128,21 @@ def backtracking(pops):
         backtrack.append(key)
     return backtrack[::-1]
 
-init_pos = (6,6)
+# init_pos = (6,6)
+# x_s = init_pos[0]
+# y_s = init_pos[1]
+
+# goal_pos = (50,25)
+# x_f = goal_pos[0]
+# y_f = goal_pos[1]
+
+init_pos = input('Initial Position: ')
+init_pos = tuple(int(i) for i in init_pos.split(" "))
 x_s = init_pos[0]
 y_s = init_pos[1]
 
-goal_pos = (50,25)
+goal_pos = input('Enter the goal state : ')
+goal_pos = tuple(int(i) for i in goal_pos.split(" "))
 x_f = goal_pos[0]
 y_f = goal_pos[1]
 
