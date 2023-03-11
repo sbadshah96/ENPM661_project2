@@ -2,6 +2,7 @@ from queue import PriorityQueue
 import time
 import pygame
 
+# Animate Dijkstra algorithm
 def pygame_plot():
     pygame.init()
     display_size = [600, 250]
@@ -52,34 +53,36 @@ def pygame_plot():
         pygame.draw.polygon(canvas, "#AE6BF5", [[x1,y1],[x2, y2],[x3,y3]],0)
 
         for val in visited_nodes:
-            pygame.draw.circle(canvas,(50,137,131),convert_to_pycoord(val),1)
+            pygame.draw.circle(canvas,(163,250,21),convert_to_pycoord(val),1)
             pygame.display.flip()
-            clock.tick(100)
+            clock.tick(600)
 
-        for val in backtrack:
-            pygame.draw.circle(canvas,(255,255,0),convert_to_pycoord(val),1)
+        for val in the_path:
+            pygame.draw.circle(canvas,(25,9,124),convert_to_pycoord(val),1)
             pygame.display.flip()
             clock.tick(100)
 
         pygame.display.flip()
-        pygame.time.wait(3000)
+        pygame.time.wait(9000)
         done = True
     pygame.quit()
 
+# Check for obstacles
 def obstacles(x,y):
     if (95<=x<=155 and 0<=y<=105):
         return False
     elif (95<=x<=155 and 145<=y<=250):
         return False
-    elif (int((y-(0.61*x)) >= -142.34) and (x <= 369.5) and (int(y+(0.62*x)) <= 396.15) and (int(y-(0.62*x)) <= 21.16) and (x >= 230.03) and (int(y+(0.62*x)) >= 224.97)):
+    elif (int((y-(0.61*x)) >= -142.34) and (x <= 371) and (int(y+(0.62*x)) <= 395) and (int(y-(0.62*x)) <= 21.16) and (x >= 230) and (int(y+(0.62*x)) >= 226)):
         return False
-    elif (int((y-(1.99*x)) >= -906.21) and (int(y+(1.99*x)) <= 1156.29) and (x >= 455) and (y<=230) and (y>=20)):
+    elif (int((y-(1.99*x)) >= -905) and (int(y+(1.99*x)) <= 1152) and (x >= 455) and (y<=230) and (y>=20)):
         return False
     elif(x<=5 or x>=595 or y<=5 or y>=245):
         return False
     else:
         return True
 
+# Check if the new node is in visited_nodes list or explored_nodes list or not
 def check_new_node(new_node):
     if new_node[3] not in visited_nodes:
         for i in range(explored_nodes.qsize()):
@@ -95,6 +98,7 @@ def check_new_node(new_node):
         explored_mapping.append(new_node[3])
         # plt.scatter(new_node[3][0],new_node[3][1],marker='o', color='#F6F8C9', s=1)
 
+# perform action in (1,0) direction
 def action1(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -106,6 +110,7 @@ def action1(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# perform action in (-1,0) direction
 def action2(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -117,6 +122,7 @@ def action2(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# perform action in (0,1) direction
 def action3(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -128,6 +134,7 @@ def action3(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# perform action in (0,-1) direction
 def action4(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -139,6 +146,7 @@ def action4(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# perform action in (1,1) direction
 def action5(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -150,6 +158,7 @@ def action5(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# perform action in (-1,1) direction
 def action6(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -161,6 +170,7 @@ def action6(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# perform action in (1,-1) direction
 def action7(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -172,6 +182,7 @@ def action7(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# perform action in (-1,-1) direction
 def action8(pop,index):
     c2c = pop[0]
     node_index = pop[1]
@@ -183,6 +194,7 @@ def action8(pop,index):
         # explored_nodes.put(new_node)
         check_new_node(new_node)
 
+# Backtrack to find the optimal path
 def backtracking(pops):
     backtrack.append(pops)
     # print('backtrack: ',backtrack)
@@ -194,9 +206,11 @@ def backtracking(pops):
         # plt.scatter(key[0],key[1],marker='o', color='red', s=1.2)
     return backtrack[::-1]
 
+# convert coordinates to pygame coordinates
 def convert_to_pycoord(coord,height=0):
         return coord[0], 250 - coord[1] - height
 
+# Code initialization
 init_pos = input('Initial position (separated by a comma, no space): ')
 init_pos = tuple(int(i) for i in init_pos.split(","))
 x_s = init_pos[0]
@@ -207,6 +221,7 @@ goal_pos = tuple(int(i) for i in goal_pos.split(","))
 x_f = goal_pos[0]
 y_f = goal_pos[1]
 
+# variable initialization
 explored_nodes = PriorityQueue()
 explored_mapping = []
 visited_nodes = []
@@ -215,6 +230,7 @@ back_points = []
 node_records = {}
 pop = []
 index = 0
+the_path = []
 
 if __name__ == '__main__' :
     start = time.time()
@@ -257,7 +273,8 @@ if __name__ == '__main__' :
                     action8(pop,index)
 
             else:
-                print('Backtracking: ',backtracking(pop[3]))
+                the_path = backtracking(pop[3])
+                print('Backtracking: ',the_path)
                 end = time.time()
                 print('Time: ',round((end - start),2),'s')
                 pygame_plot()
@@ -267,5 +284,3 @@ if __name__ == '__main__' :
         print('Cannot Dijkstrare, starting node in an obstacle space.')
     elif not obstacles(x_f,y_f):
         print('Cannot Dijkstrare, goal node in an obstacle space.')
-
-    
