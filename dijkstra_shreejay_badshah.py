@@ -1,44 +1,70 @@
 from queue import PriorityQueue
 import time
-import matplotlib.pyplot as plt
-# from matplotlib.figure import Figure
-# from matplotlib.backends.backend_agg import FigureCanvasAgg
-# from PIL import Image
-from matplotlib import animation
 import pygame
 
-def project_map():
-    rectangle_boundary = plt.Rectangle((0,0), 600, 250, color='#474749')
-    rectangle = plt.Rectangle((5,5), 590, 240, color='#C9EEF8')
-    rectangle1 = plt.Rectangle((95,0),60,105,color='#33B8FF')
-    rectangle2 = plt.Rectangle((95,145),60,105,color='#33B8FF')
-    points1 = [[455,3.78],[455,246.22],[515.61,125]]
-    triangle = plt.Polygon(points1,closed=None,fill='#33B8FF')
-    # points2 = [[300,50],[385,87.5],[385,162.5],[300,200],[215,162.5],[215,87.5]]
-    points2 = [[300,41.34],[369.95,84.17],[369.95,164.93],[300,208.66],[230.03,164.93],[230.03,84.17]]
-    hexagon = plt.Polygon(points2,closed=None,fill='#33B8FF')
-    plt.gca().add_patch(rectangle_boundary)
-    plt.gca().add_patch(rectangle)
-    plt.gca().add_patch(rectangle1)
-    plt.gca().add_patch(rectangle2)
-    plt.gca().add_patch(triangle)
-    plt.gca().add_patch(hexagon)
+def pygame_plot():
+    pygame.init()
+    display_size = [600, 250]
+    canvas = pygame.display.set_mode(display_size)
+    pygame.display.set_caption("Map Exploration")
 
-    plt.xlim(0,650)
-    plt.ylim(0,250)
-    # plt.autoscale(enable='True',axis='x')
+    done = False
+    clock = pygame.time.Clock()
+    
+    while not done:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+        canvas.fill("white")
 
-    # plt.rcParams["figure.figsize"] = [650, 250]
-    # plt.rcParams["figure.autolayout"] = True
+        x, y = convert_to_pycoord((95,0),105)
+        pygame.draw.rect(canvas, "#B11F1D", [x, y, 60, 105], 0)
 
-    for val in explored_mapping:
-        plt.scatter(val[0],val[1],marker='o', color='#F6F8C9', s=0.1)
-       
-    # plt.pause(2)
-    for val in backtrack:
-        plt.scatter(val[0],val[1],marker='o', color='red', s=0.3)
+        x, y = convert_to_pycoord((100,0),100)
+        pygame.draw.rect(canvas, "#F8C9F4", [x, y, 50, 100], 0)
 
-    plt.show()
+        x, y = convert_to_pycoord([95, 145],105)
+        pygame.draw.rect(canvas, "#B11F1D", [x, y, 60, 105], 0)
+
+        x, y = convert_to_pycoord([100, 150],100)
+        pygame.draw.rect(canvas, "#F8C9F4", [x, y, 50, 100], 0)
+
+        x1,y1 = convert_to_pycoord([300,41.3])
+        x2,y2 = convert_to_pycoord([370,84.6])
+        x3,y3 = convert_to_pycoord([370,165.3])
+        x4,y4 = convert_to_pycoord([300,208.6])
+        x5,y5 = convert_to_pycoord([230,165.3])
+        x6,y6 = convert_to_pycoord([230.05,84.6])
+        pygame.draw.polygon(canvas, "#E40D06", [[x1,y1],[x2, y2],[x3,y3],[x4,y4],[x5,y5],[x6,y6]],0)
+
+        pygame.draw.polygon(canvas, "#ED26F0", ((300, 50),(365, 87.5),(365, 162.5),(300, 200),(235, 162.5),(235, 87.5)))
+
+        x1,y1 = convert_to_pycoord([455,20])
+        x2,y2 = convert_to_pycoord([463,20])
+        x3,y3 = convert_to_pycoord([515.6,125])
+        x4,y4 = convert_to_pycoord([463,230])
+        x5,y5 = convert_to_pycoord([455,230])
+        pygame.draw.polygon(canvas, "#932CF5", ([x1,y1],[x2, y2],[x3,y3],[x4,y4],[x5,y5]),0)
+
+        x1,y1 = convert_to_pycoord([460,25])
+        x2,y2 = convert_to_pycoord([460,225])
+        x3,y3 = convert_to_pycoord([510,125])
+        pygame.draw.polygon(canvas, "#AE6BF5", [[x1,y1],[x2, y2],[x3,y3]],0)
+
+        for val in visited_nodes:
+            pygame.draw.circle(canvas,(50,137,131),convert_to_pycoord(val),1)
+            pygame.display.flip()
+            clock.tick(100)
+
+        for val in backtrack:
+            pygame.draw.circle(canvas,(255,255,0),convert_to_pycoord(val),1)
+            pygame.display.flip()
+            clock.tick(100)
+
+        pygame.display.flip()
+        pygame.time.wait(3000)
+        done = True
+    pygame.quit()
 
 def obstacles(x,y):
     if (95<=x<=155 and 0<=y<=105):
@@ -168,21 +194,16 @@ def backtracking(pops):
         # plt.scatter(key[0],key[1],marker='o', color='red', s=1.2)
     return backtrack[::-1]
 
-# init_pos = (550,200)
-# x_s = init_pos[0]
-# y_s = init_pos[1]
+def convert_to_pycoord(coord,height=0):
+        return coord[0], 250 - coord[1] - height
 
-# goal_pos = (8,8)
-# x_f = goal_pos[0]
-# y_f = goal_pos[1]
-
-init_pos = input('Initial position: ')
-init_pos = tuple(int(i) for i in init_pos.split(" "))
+init_pos = input('Initial position (separated by a comma, no space): ')
+init_pos = tuple(int(i) for i in init_pos.split(","))
 x_s = init_pos[0]
 y_s = init_pos[1]
 
-goal_pos = input('Goal position: ')
-goal_pos = tuple(int(i) for i in goal_pos.split(" "))
+goal_pos = input('Goal position (separated by a comma, no space): ')
+goal_pos = tuple(int(i) for i in goal_pos.split(","))
 x_f = goal_pos[0]
 y_f = goal_pos[1]
 
@@ -236,19 +257,15 @@ if __name__ == '__main__' :
                     action8(pop,index)
 
             else:
-                print('Explored Nodes size: ',explored_nodes.qsize())
-                print('Visited Nodes length: ',len(visited_nodes))
-                print('Last pop[3]: ',pop[3])
-                print('Explored Mapping length: ',len(explored_mapping))
-                # print('Backtracking: ',backtracking(pop[3]))
+                print('Backtracking: ',backtracking(pop[3]))
                 end = time.time()
                 print('Time: ',round((end - start),2),'s')
-                project_map()
+                pygame_plot()
                 break
 
     elif not obstacles(x_s,y_s):
         print('Cannot Dijkstrare, starting node in an obstacle space.')
     elif not obstacles(x_f,y_f):
         print('Cannot Dijkstrare, goal node in an obstacle space.')
-        
+
     
