@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 # from matplotlib.backends.backend_agg import FigureCanvasAgg
 # from PIL import Image
 from matplotlib import animation
+import pygame
 
 def project_map():
     rectangle_boundary = plt.Rectangle((0,0), 600, 250, color='#474749')
@@ -40,13 +41,13 @@ def project_map():
     plt.show()
 
 def obstacles(x,y):
-    if (x>=95 and x<=155 and y>=0 and y<=105):
+    if (95<=x<=155 and 0<=y<=105):
         return False
-    elif (x>=95 and x<=155 and y>=145 and y<=250):
+    elif (95<=x<=155 and 145<=y<=250):
         return False
-    elif ((y-(0.61*x) >= -142.34) and (x <= 369.5) and (y+(0.62*x) <= 396.15) and (y-(0.62*x) <= 21.16) and (x >= 230.03) and (y+(0.62*x) >= 224.97)):
+    elif (int((y-(0.61*x)) >= -142.34) and (x <= 369.5) and (int(y+(0.62*x)) <= 396.15) and (int(y-(0.62*x)) <= 21.16) and (x >= 230.03) and (int(y+(0.62*x)) >= 224.97)):
         return False
-    elif ((y-(1.99*x) >= -906.21) and (y+(1.99*x) <= 1156.29) and (x >= 455)):
+    elif (int((y-(1.99*x)) >= -906.21) and (int(y+(1.99*x)) <= 1156.29) and (x >= 455) and (y<=230) and (y>=20)):
         return False
     elif(x<=5 or x>=595 or y<=5 or y>=245):
         return False
@@ -167,23 +168,23 @@ def backtracking(pops):
         # plt.scatter(key[0],key[1],marker='o', color='red', s=1.2)
     return backtrack[::-1]
 
-init_pos = (160,220)
-x_s = init_pos[0]
-y_s = init_pos[1]
-
-goal_pos = (8,8)
-x_f = goal_pos[0]
-y_f = goal_pos[1]
-
-# init_pos = input('Initial position: ')
-# init_pos = tuple(int(i) for i in init_pos.split(" "))
+# init_pos = (550,200)
 # x_s = init_pos[0]
 # y_s = init_pos[1]
 
-# goal_pos = input('Goal position: ')
-# goal_pos = tuple(int(i) for i in goal_pos.split(" "))
+# goal_pos = (8,8)
 # x_f = goal_pos[0]
 # y_f = goal_pos[1]
+
+init_pos = input('Initial position: ')
+init_pos = tuple(int(i) for i in init_pos.split(" "))
+x_s = init_pos[0]
+y_s = init_pos[1]
+
+goal_pos = input('Goal position: ')
+goal_pos = tuple(int(i) for i in goal_pos.split(" "))
+x_f = goal_pos[0]
+y_f = goal_pos[1]
 
 explored_nodes = PriorityQueue()
 explored_mapping = []
@@ -205,24 +206,34 @@ if __name__ == '__main__' :
         while not explored_nodes.empty():
             pop = explored_nodes.get()
             # print('pop: ',pop)
-            visited_nodes.append(pop[3])
+             #closed list
             if pop[3]!=goal_pos:
-                index+=1
-                action1(pop,index)
-                index+=1
-                action2(pop,index)
-                index+=1
-                action3(pop,index)
-                index+=1
-                action4(pop,index)
-                index+=1
-                action5(pop,index)
-                index+=1
-                action6(pop,index)
-                index+=1
-                action7(pop,index)
-                index+=1
-                action8(pop,index)
+                if pop[3] not in visited_nodes:
+                    visited_nodes.append(pop[3])
+
+                    index+=1
+                    action1(pop,index)
+                    
+                    index+=1
+                    action2(pop,index)
+
+                    index+=1
+                    action3(pop,index)
+                    
+                    index+=1
+                    action4(pop,index)
+
+                    index+=1
+                    action5(pop,index)
+
+                    index+=1
+                    action6(pop,index)
+
+                    index+=1
+                    action7(pop,index)
+    
+                    index+=1
+                    action8(pop,index)
 
             else:
                 print('Explored Nodes size: ',explored_nodes.qsize())
@@ -230,14 +241,14 @@ if __name__ == '__main__' :
                 print('Last pop[3]: ',pop[3])
                 print('Explored Mapping length: ',len(explored_mapping))
                 # print('Backtracking: ',backtracking(pop[3]))
-                back_points = backtracking(pop[3])
                 end = time.time()
                 print('Time: ',round((end - start),2),'s')
                 project_map()
                 break
+
     elif not obstacles(x_s,y_s):
         print('Cannot Dijkstrare, starting node in an obstacle space.')
     elif not obstacles(x_f,y_f):
         print('Cannot Dijkstrare, goal node in an obstacle space.')
         
-     
+    
