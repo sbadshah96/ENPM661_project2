@@ -63,7 +63,7 @@ def pygame_plot():
             clock.tick(100)
 
         pygame.display.flip()
-        pygame.time.wait(9000)
+        pygame.time.wait(4000)
         done = True
     pygame.quit()
 
@@ -96,7 +96,6 @@ def check_new_node(new_node):
         explored_nodes.put(new_node)
         node_records[new_node[3]] = pop[3]
         explored_mapping.append(new_node[3])
-        # plt.scatter(new_node[3][0],new_node[3][1],marker='o', color='#F6F8C9', s=1)
 
 # perform action in (1,0) direction
 def action1(pop,index):
@@ -106,8 +105,6 @@ def action1(pop,index):
     obs = obstacles(x+1,y)
     if obs:
         new_node = (round(c2c+1,2),index,node_index,(x+1,y))
-        # print('new node from action1: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # perform action in (-1,0) direction
@@ -118,8 +115,6 @@ def action2(pop,index):
     obs = obstacles(x-1,y)
     if obs:
         new_node = (round(c2c+1,2),index,node_index,(x-1,y))
-        # print('new node from action2: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # perform action in (0,1) direction
@@ -130,8 +125,6 @@ def action3(pop,index):
     obs = obstacles(x,y+1)
     if obs:
         new_node = (round(c2c+1,2),index,node_index,(x,y+1))
-        # print('new node from action2: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # perform action in (0,-1) direction
@@ -142,8 +135,6 @@ def action4(pop,index):
     obs = obstacles(x,y-1)
     if obs:
         new_node = (round(c2c+1,2),index,node_index,(x,y-1))
-        # print('new node from action2: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # perform action in (1,1) direction
@@ -154,8 +145,6 @@ def action5(pop,index):
     obs = obstacles(x+1,y+1)
     if obs:
         new_node = (round(c2c+1.4,2),index,node_index,(x+1,y+1))
-        # print('new node from action2: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # perform action in (-1,1) direction
@@ -166,8 +155,6 @@ def action6(pop,index):
     obs = obstacles(x-1,y+1)
     if obs:
         new_node = (round(c2c+1.4,2),index,node_index,(x-1,y+1))
-        # print('new node from action2: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # perform action in (1,-1) direction
@@ -178,8 +165,6 @@ def action7(pop,index):
     obs = obstacles(x+1,y-1)
     if obs:
         new_node = (round(c2c+1.4,2),index,node_index,(x+1,y-1))
-        # print('new node from action2: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # perform action in (-1,-1) direction
@@ -190,20 +175,16 @@ def action8(pop,index):
     obs = obstacles(x-1,y-1)
     if obs:
         new_node = (round(c2c+1.4,2),index,node_index,(x-1,y-1))
-        # print('new node from action2: ',new_node)
-        # explored_nodes.put(new_node)
         check_new_node(new_node)
 
 # Backtrack to find the optimal path
 def backtracking(pops):
     backtrack.append(pops)
-    # print('backtrack: ',backtrack)
     key = node_records[pops]
     backtrack.append(key)
     while key!=init_pos:
         key = node_records[key]
         backtrack.append(key)
-        # plt.scatter(key[0],key[1],marker='o', color='red', s=1.2)
     return backtrack[::-1]
 
 # convert coordinates to pygame coordinates
@@ -242,8 +223,6 @@ if __name__ == '__main__' :
         explored_mapping.append(init_node[3]) #mapping
         while not explored_nodes.empty():
             pop = explored_nodes.get()
-            # print('pop: ',pop)
-             #closed list
             if pop[3]!=goal_pos:
                 if pop[3] not in visited_nodes:
                     visited_nodes.append(pop[3])
