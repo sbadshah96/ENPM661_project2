@@ -88,8 +88,7 @@ def check_new_node(new_node):
         for i in range(explored_nodes.qsize()):
             if explored_nodes.queue[i][3] == new_node[3]:
                 if explored_nodes.queue[i][0] > new_node[0]:
-                    explored_nodes.queue[i][0] = new_node[0]
-                    explored_nodes.queue[i][2] = new_node[2]
+                    explored_nodes.queue[i] = new_node
                     return None
                 else:
                     return None
@@ -218,7 +217,7 @@ if __name__ == '__main__' :
 
     if obstacles(x_s,y_s) and obstacles(x_f,y_f):
         print('Dijkstraring........')
-        init_node = (0,0,0,(x_s,y_s))
+        init_node = [0,0,0,(x_s,y_s)]
         explored_nodes.put(init_node)  #open list
         explored_mapping.append(init_node[3]) #mapping
         while not explored_nodes.empty():
