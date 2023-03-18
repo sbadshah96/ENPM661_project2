@@ -257,7 +257,8 @@ if __name__ == '__main__' :
                 print('Time: ',round((end - start),2),'s')
                 pygame_plot()
                 break
-
+        if explored_nodes.empty():
+            print('No solution found.')
     elif not obstacles(x_s,y_s):
         print('Cannot Dijkstrare, starting node in an obstacle space.')
     elif not obstacles(x_f,y_f):
